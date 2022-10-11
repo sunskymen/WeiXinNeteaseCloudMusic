@@ -8,9 +8,11 @@
         <!-- 点击播放 -->
         <view class="detail-play" @tap="handleToPlay">
           <image :src="songDetail.al.picUrl" :class="{ 'detail-play-run': isplayRotate }" mode=""></image>
-          <text class="iconfont" :class="iconPlay"></text>
+          <text class="iconfont playBtn" :class="iconPlay"></text>
+          <!-- 爱心收藏 -->
+          <text class="iconfont icon-aixin aixin" :class="{active:isSave}" @tap.stop="handleToSave"></text>
           <!-- 指针图片 -->
-          <view :class="{avtive:isplayRotate,stop:!isplayRotate}"></view>
+          <view class="needle" :class="{avtive:isplayRotate,stop:!isplayRotate}"></view>
         </view>
         <!-- 歌词 -->
         <view class="detail-lyric">
@@ -87,7 +89,8 @@ export default {
       lyricIndex: 0,
       iconPlay: 'icon-zanting',
       isplayRotate: true,
-      isLoading: true
+      isLoading: true,
+      isSave: false
     };
   },
   methods: {
@@ -179,6 +182,22 @@ export default {
         this.cancelLyricIndex();
       }
     },
+    // 点击收藏或取消收藏
+    handleToSave(){
+      this.isSave = !this.isSave
+      // let obj = {}
+      // if (this.isSave == true){
+      //   // 整理参数
+      //   obj.id = this.songDetail.id
+      //   obj.name = this.songDetail.name
+      //   // 通知store 存储收藏
+      //   this.$store.commit('SAVE_SONG', obj)
+      // }else {
+      //   obj.id = this.songDetail.id
+      //   // 通知取消收藏
+      //   this.$store.commit('REMOVE_SONG', obj)
+      // }
+    },
     // 监听播放时间
     listenLyricIndex() {
       clearInterval(this.timer);
@@ -234,6 +253,14 @@ export default {
 
 <style lang="less" scoped>
 // 动画
+@keyframes aixin {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
 @keyframes move {
   from {
     transform: rotate(0deg);
@@ -260,6 +287,17 @@ export default {
   .detail-play-run {
     animation-play-state: running;
   }
+  .aixin {
+    position: absolute;
+    left: 500rpx;
+    top: -80rpx;
+    font-size: 40px;
+    color: white;
+    &.active {
+      animation: aixin 0.5s linear 2;
+      color: red;
+    }
+  }
   image {
     position: absolute;
     width: 370rpx;
@@ -273,7 +311,7 @@ export default {
     animation: 10s linear move infinite;
     animation-play-state: paused;
   }
-  text {
+  .playBtn {
     position: absolute;
     width: 100rpx;
     height: 100rpx;
@@ -285,7 +323,7 @@ export default {
     bottom: 0;
     margin: auto;
   }
-  view {
+  .needle {
     position: absolute;
     left: 100rpx;
     right: 0;
